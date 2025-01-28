@@ -12,15 +12,15 @@ struct ContentView: View {
     private let grades = ["7", "7+", "8-", "8", "8+", "9-"]
     @State private var selectedGrade: String? = nil
 
-    // Define available colors
-    private let colors: [(name: String, color: Color)] = [
-        ("Blue", .blue),
-        ("Red", .red),
-        ("Green", .green),
-        ("Yellow", .yellow),
-        ("Purple", .purple),
-        ("Black", .black),
-        ("Gray", .gray)
+    // Define available colors with contrasting outlines
+    private let colors: [(name: String, color: Color, border: Color)] = [
+        ("Blue", .blue, .white),
+        ("Red", .red, .white),
+        ("Green", .green, .white),
+        ("Yellow", .yellow, .black),
+        ("Purple", .purple, .white),
+        ("Black", .black, .white),  // White ring to make it visible
+        ("Gray", .gray, .black)     // Black ring for contrast
     ]
     @State private var selectedColor: String? = nil
 
@@ -30,21 +30,17 @@ struct ContentView: View {
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) { // **Make entire screen scrollable**
             VStack(spacing: 10) {
-                
-
                 // Grade Selector
-                VStack(alignment: .leading) {
-                    
-
+                VStack {
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 10) {
                             ForEach(grades, id: \.self) { grade in
                                 Text(grade)
                                     .font(.title3)
-                                    .frame(width: 40, height: 40)
+                                    .frame(width: 45, height: 45)
                                     .background(selectedGrade == grade ? Color.gray.opacity(0.6) : Color.white)
                                     .foregroundColor(.black)
-                                    .cornerRadius(20)
+                                    .cornerRadius(22.5)
                                     .shadow(radius: 2)
                                     .onTapGesture {
                                         selectedGrade = grade
@@ -56,15 +52,17 @@ struct ContentView: View {
                 }
 
                 // Color Selector (Scrollable)
-                VStack(alignment: .leading) {
-                    
-
+                VStack {
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 10) {
                             ForEach(colors, id: \.name) { color in
                                 Circle()
                                     .fill(color.color)
                                     .frame(width: 40, height: 40)
+                                    .overlay(
+                                        Circle()
+                                            .stroke(color.border, lineWidth: 2) // Contrasting ring
+                                    )
                                     .overlay(
                                         Circle()
                                             .stroke(selectedColor == color.name ? Color.black : Color.clear, lineWidth: 3)
@@ -96,30 +94,6 @@ struct ContentView: View {
                 }
                 .disabled(selectedGrade == nil || selectedColor == nil)
                 .opacity(selectedGrade == nil || selectedColor == nil ? 0.5 : 1.0)
-
-                // Logged Climbs (Scrollable)
-                if !climbs.isEmpty {
-                    VStack(alignment: .leading, spacing: 10) {
-                        Text("Your Climbs:")
-                            .font(.headline)
-
-                        ScrollView {
-                            VStack(spacing: 5) {
-                                ForEach(climbs) { climb in
-                                    HStack {
-                                        Text("Grade: \(climb.grade)")
-                                        Spacer()
-                                        Text("Color: \(climb.color)")
-                                    }
-                                    .padding()
-                                    .background(Color.gray.opacity(0.2))
-                                    .cornerRadius(8)
-                                }
-                            }
-                        }
-                        .frame(maxHeight: 120) // Prevents excessive list height
-                    }
-                }
 
                 Spacer(minLength: 20) // Prevents layout compression
             }
