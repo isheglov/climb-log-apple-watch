@@ -94,6 +94,29 @@ struct ContentView: View {
                 }
                 .disabled(selectedGrade == nil || selectedColor == nil)
                 .opacity(selectedGrade == nil || selectedColor == nil ? 0.5 : 1.0)
+                // Logged Climbs (Scrollable)
+                
+                        if !climbs.isEmpty {
+                            VStack(alignment: .leading, spacing: 10) {
+                                Text("Your Climbs:")
+                                    .font(.headline)
+                                ScrollView {
+                                    VStack(spacing: 5) {
+                                        ForEach(climbs) { climb in
+                                            HStack {
+                                                Text("Grade: \(climb.grade)")
+                                                Spacer()
+                                                Text("Color: \(climb.color)")
+                                            }
+                                            .padding()
+                                            .background(Color.gray.opacity(0.2))
+                                            .cornerRadius(8)
+                                        }
+                                    }
+                                }
+                                .frame(maxHeight: 120) // Prevents excessive list height
+                            }
+                        }
 
                 Spacer(minLength: 20) // Prevents layout compression
             }
